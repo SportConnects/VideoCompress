@@ -20,6 +20,7 @@ class AvController: NSObject {
             group.leave()
         })
         group.wait()
+        
         return track
     }
     
