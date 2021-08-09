@@ -85,8 +85,8 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
             "compressVideo" -> {
                 val path = call.argument<String>("path")!!
                 val quality = call.argument<Int>("quality")
-                val width = call.argument<Int>("width")
-                val height = call.argument<Int>("height")
+                val width = if (call.argument<Int>("width") == null) 1280 else call.argument<Int>("width")
+                val height = if (call.argument<Int>("height") == null) 720 else call.argument<Int>("height")
                 val deleteOrigin = call.argument<Boolean>("deleteOrigin")!!
                 val startTime = call.argument<Int>("startTime")
                 val duration = call.argument<Int>("duration")
