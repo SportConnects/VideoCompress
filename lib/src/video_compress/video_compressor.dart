@@ -2,32 +2,34 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import '../progress_callback/compress_mixin.dart';
-import '../video_compress/video_quality.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import '../media/media_info.dart';
+import '../progress_callback/compress_mixin.dart';
+import '../video_compress/video_quality.dart';
+
+IVideoCompress get VideoCompress => _VideoCompressImpl.instance;
 
 abstract class IVideoCompress extends CompressMixin {}
 
+// ignore: non_constant_identifier_names
 class _VideoCompressImpl extends IVideoCompress {
-  _VideoCompressImpl._() {
-    initProcessCallback();
-  }
-
   static _VideoCompressImpl? _instance;
 
   static _VideoCompressImpl get instance {
     return _instance ??= _VideoCompressImpl._();
   }
 
+  _VideoCompressImpl._() {
+    initProcessCallback();
+  }
+
   static void _dispose() {
     _instance = null;
   }
 }
-
-// ignore: non_constant_identifier_names
-IVideoCompress get VideoCompress => _VideoCompressImpl.instance;
 
 extension Compress on IVideoCompress {
   void dispose() {
@@ -37,7 +39,9 @@ extension Compress on IVideoCompress {
   Future<T?> _invoke<T>(String name, [Map<String, dynamic>? params]) async {
     T? result;
     try {
-      result = params != null ? await channel.invokeMethod(name, params) : await channel.invokeMethod(name);
+      result = params != null
+          ? await channel.invokeMethod(name, params)
+          : await channel.invokeMethod(name);
     } on PlatformException catch (e) {
       debugPrint('''Error from VideoCompress: 
       Method: $name
@@ -121,6 +125,8 @@ extension Compress on IVideoCompress {
   Future<MediaInfo?> compressVideo(
     String path, {
     VideoQuality quality = VideoQuality.DefaultQuality,
+    int? width,
+    int? height,
     bool deleteOrigin = false,
     int? startTime,
     int? duration,
@@ -142,6 +148,8 @@ extension Compress on IVideoCompress {
     final jsonStr = await _invoke<String>('compressVideo', {
       'path': path,
       'quality': quality.index,
+      'width': width,
+      'height': height,
       'deleteOrigin': deleteOrigin,
       'startTime': startTime,
       'duration': duration,
