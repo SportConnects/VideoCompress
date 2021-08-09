@@ -1,5 +1,6 @@
 package com.example.video_compress
 
+import android.util.Log
 import android.content.Context
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
@@ -53,9 +54,11 @@ class Utility(private val channelName: String) {
         }
         val ori = orientation?.toIntOrNull()
         if (ori != null && isLandscapeImage(ori)) {
+            Log.w("VERDAMMT", "isLandscapeImage")
+
             val tmp = width
-            width = height
-            height = tmp
+            //width = height
+            //height = tmp
         }
 
         retriever.release()
