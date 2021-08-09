@@ -88,8 +88,10 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
             "compressVideo" -> {
                 val path = call.argument<String>("path")!!
                 val quality = call.argument<Int>("quality")
-                val width = if (call.argument<Int>("width") == null) 1280 else call.argument<Int>("width")
-                val height = if (call.argument<Int>("height") == null) 720 else call.argument<Int>("height")
+                val width =
+                    if (call.argument<Int>("width") == null) 1280 else call.argument<Int>("width")
+                val height =
+                    if (call.argument<Int>("height") == null) 720 else call.argument<Int>("height")
                 val deleteOrigin = call.argument<Boolean>("deleteOrigin")!!
                 val startTime = call.argument<Int>("startTime")
                 val duration = call.argument<Int>("duration")
@@ -101,30 +103,36 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                 val out = SimpleDateFormat("yyyy-MM-dd hh-mm-ss").format(Date())
                 val destPath: String = tempDir + File.separator + "VID_" + out + ".mp4"
 
-                var videoTrackStrategy: TrackStrategy = DefaultVideoStrategy.exact(640, 640).build();
+                var videoTrackStrategy: TrackStrategy =
+                    DefaultVideoStrategy.exact(640, 640).build();
                 val audioTrackStrategy: TrackStrategy
 
                 if (width != null && height != null) {
                     // Need original video metadata
-                    val mediaInfoJson = Utility(channelName).getMediaInfoJson(context, path!!).toString()
+                    val mediaInfoJson =
+                        Utility(channelName).getMediaInfoJson(context, path!!).toString()
                     Log.w(TAG, mediaInfoJson)
 
-                    if(mediaInfoJson != null) {
-                        val decodeJsonObject: JSONObject = JSONTokener(mediaInfoJson).nextValue() as JSONObject
+                    if (!mediaInfoJson.isNullOrEmpty()) {
+                        val decodeJsonObject: JSONObject =
+                            JSONTokener(mediaInfoJson).nextValue() as JSONObject
                         val decodedVideoWidth = decodeJsonObject.getInt("width")
                         val decodedVideoHeight = decodeJsonObject.getInt("height")
 
-                        if(decodedVideoWidth >= 640 && decodedVideoHeight >= 640) {
+                        Log.d("V_WIDTH", decodedVideoWidth.toString())
+                        Log.d("V_HEIGHT", decodedVideoHeight.toString())
+
+                        if (decodedVideoWidth >= 640 && decodedVideoHeight >= 640) {
                             videoTrackStrategy = DefaultVideoStrategy.exact(640, 640).build()
-                        } else if(decodedVideoHeight >= 480 && decodedVideoHeight <= 640) {
+                        } else if (decodedVideoHeight >= 480 && decodedVideoHeight <= 640) {
                             videoTrackStrategy = DefaultVideoStrategy.exact(480, 480).build()
-                        } else if(decodedVideoHeight >= 320 && decodedVideoHeight <= 480) {
+                        } else if (decodedVideoHeight >= 320 && decodedVideoHeight <= 480) {
                             videoTrackStrategy = DefaultVideoStrategy.exact(320, 320).build()
-                        } else if(decodedVideoHeight >= 160 && decodedVideoHeight <= 320) {
+                        } else if (decodedVideoHeight >= 160 && decodedVideoHeight <= 320) {
                             videoTrackStrategy = DefaultVideoStrategy.exact(160, 160).build()
-                        } else if(decodedVideoHeight >= 0 && decodedVideoHeight <= 160) {
+                        } else if (decodedVideoHeight >= 0 && decodedVideoHeight <= 160) {
                             videoTrackStrategy = DefaultVideoStrategy.exact(160, 160).build()
-                        } else if(decodedVideoHeight >= 0 && decodedVideoHeight <= 160) {
+                        } else if (decodedVideoHeight >= 0 && decodedVideoHeight <= 160) {
                             videoTrackStrategy = DefaultVideoStrategy.exact(width, height).build()
                         }
                     } else {
