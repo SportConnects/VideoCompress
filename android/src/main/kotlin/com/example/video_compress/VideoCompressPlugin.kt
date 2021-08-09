@@ -23,6 +23,9 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Future
+import org.json.JSONArray
+import org.json.JSONObject
+import org.json.JSONTokener
 
 /**
  * VideoCompressPlugin
@@ -103,21 +106,29 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
 
                 if (width != null && height != null) {
                     // Need original video metadata
-                    val mediaInfo = Utility(channelName).getMediaInfoJson(context, path!!).toString()
-                    Log.w(TAG, mediaInfo)
+                    val mediaInfoJson = Utility(channelName).getMediaInfoJson(context, path!!).toString()
+                    Log.w(TAG, mediaInfoJson)
 
-                    if(width >= 640 && height >= 640) {
+                    if(mediaInfoJson != null) {
+                        val decodeJsonObject: JSONObject = JSONTokener(mediaInfoJson).nextValue() as JSONObject
+                        val decodedVideoWidth = decodeJsonObject.getInt("width")
+                        val decodedVideoHeight = decodeJsonObject.getInt("height")
+
+                        if(decodedVideoWidth >= 640 && decodedVideoHeight >= 640) {
+                            videoTrackStrategy = DefaultVideoStrategy.exact(640, 640).build()
+                        } else if(decodedVideoHeight >= 480 && decodedVideoHeight <= 640) {
+                            videoTrackStrategy = DefaultVideoStrategy.exact(480, 480).build()
+                        } else if(decodedVideoHeight >= 320 && decodedVideoHeight <= 480) {
+                            videoTrackStrategy = DefaultVideoStrategy.exact(320, 320).build()
+                        } else if(decodedVideoHeight >= 160 && decodedVideoHeight <= 320) {
+                            videoTrackStrategy = DefaultVideoStrategy.exact(160, 160).build()
+                        } else if(decodedVideoHeight >= 0 && decodedVideoHeight <= 160) {
+                            videoTrackStrategy = DefaultVideoStrategy.exact(160, 160).build()
+                        } else if(decodedVideoHeight >= 0 && decodedVideoHeight <= 160) {
+                            videoTrackStrategy = DefaultVideoStrategy.exact(width, height).build()
+                        }
+                    } else {
                         videoTrackStrategy = DefaultVideoStrategy.exact(640, 640).build()
-                    } else if(height >= 480 && height <= 640) {
-                        videoTrackStrategy = DefaultVideoStrategy.exact(480, 480).build()
-                    } else if(height >= 320 && height <= 480) {
-                        videoTrackStrategy = DefaultVideoStrategy.exact(320, 320).build()
-                    } else if(height >= 160 && height <= 320) {
-                        videoTrackStrategy = DefaultVideoStrategy.exact(160, 160).build()
-                    } else if(height >= 0 && height <= 160) {
-                        videoTrackStrategy = DefaultVideoStrategy.exact(160, 160).build()
-                    } else if(height >= 0 && height <= 160) {
-                        videoTrackStrategy = DefaultVideoStrategy.exact(width, height).build()
                     }
                 }
 
