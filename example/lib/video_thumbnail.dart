@@ -11,7 +11,7 @@ class VideoThumbnail extends StatefulWidget {
 }
 
 class _VideoThumbnailState extends State<VideoThumbnail> {
-  File? _thumbnailFile;
+  File _thumbnailFile;
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +19,14 @@ class _VideoThumbnailState extends State<VideoThumbnail> {
       var file;
 
       if (Platform.isMacOS) {
-        final typeGroup = XTypeGroup(label: 'videos', extensions: ['mov', 'mp4']);
+        final typeGroup =
+            XTypeGroup(label: 'videos', extensions: ['mov', 'mp4']);
         file = await openFile(acceptedTypeGroups: [typeGroup]);
       } else {
         final picker = ImagePicker();
-        PickedFile? pickedFile = await picker.getVideo(source: ImageSource.gallery);
-        file = File(pickedFile!.path);
+        PickedFile pickedFile =
+            await picker.getVideo(source: ImageSource.gallery);
+        file = File(pickedFile.path);
       }
 
       if (file != null) {
@@ -42,7 +44,10 @@ class _VideoThumbnailState extends State<VideoThumbnail> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(child: ElevatedButton(onPressed: _getVideoThumbnail, child: Text('Get File Thumbnail'))),
+            Container(
+                child: ElevatedButton(
+                    onPressed: _getVideoThumbnail,
+                    child: Text('Get File Thumbnail'))),
             _buildThumbnail(),
           ],
         ),
@@ -54,9 +59,10 @@ class _VideoThumbnailState extends State<VideoThumbnail> {
     if (_thumbnailFile != null) {
       return Container(
         padding: EdgeInsets.all(20.0),
-        child: Image(image: FileImage(_thumbnailFile!)),
+        child: Image(image: FileImage(_thumbnailFile)),
       );
     }
+
     return Container();
   }
 }
