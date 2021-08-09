@@ -124,15 +124,9 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
 
                         if (decodedVideoWidth >= 640 && decodedVideoHeight >= 640) {
                             videoTrackStrategy = DefaultVideoStrategy.exact(640, 640).build()
-                        } else if (decodedVideoHeight >= 480 && decodedVideoHeight <= 640) {
+                        } else if (decodedVideoHeight < 560) {
                             videoTrackStrategy = DefaultVideoStrategy.exact(480, 480).build()
-                        } else if (decodedVideoHeight >= 320 && decodedVideoHeight <= 480) {
-                            videoTrackStrategy = DefaultVideoStrategy.exact(320, 320).build()
-                        } else if (decodedVideoHeight >= 160 && decodedVideoHeight <= 320) {
-                            videoTrackStrategy = DefaultVideoStrategy.exact(160, 160).build()
-                        } else if (decodedVideoHeight >= 0 && decodedVideoHeight <= 160) {
-                            videoTrackStrategy = DefaultVideoStrategy.exact(160, 160).build()
-                        } else if (decodedVideoHeight >= 0 && decodedVideoHeight <= 160) {
+                        } else {
                             videoTrackStrategy = DefaultVideoStrategy.exact(width, height).build()
                         }
                     } else {
