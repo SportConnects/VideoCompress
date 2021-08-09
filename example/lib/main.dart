@@ -32,26 +32,6 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class VideoPlayerScreen extends StatefulWidget {
-  final MediaInfo info;
-  final int originalSize;
-  final int originalWidth;
-  final int originalHeigth;
-  final DateTimeRange duration;
-
-  VideoPlayerScreen(
-      {Key key,
-      this.info,
-      this.originalSize,
-      this.originalWidth,
-      this.originalHeigth,
-      this.duration})
-      : super(key: key);
-
-  @override
-  _VideoPlayerScreenState createState() => _VideoPlayerScreenState();
-}
-
 class _MyHomePageState extends State<MyHomePage> {
   String _progress = "0";
 
@@ -90,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
           final picker = ImagePicker();
           PickedFile pickedFile =
-              await picker.getVideo(source: ImageSource.gallery);
+          await picker.getVideo(source: ImageSource.gallery);
           file = File(pickedFile.path);
           if (file == null) {
             return;
@@ -110,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
             includeAudio: true,
           );
           var _subscription =
-              VideoCompress.compressProgress$.subscribe((progress) {
+          VideoCompress.compressProgress$.subscribe((progress) {
             setState(() {
               _progress = '${progress.toInt().toString()}%';
             });
@@ -118,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
           final info = await infoFuture;
           _subscription.unsubscribe();
           var conversionTime =
-              DateTimeRange(start: startTime, end: DateTime.now());
+          DateTimeRange(start: startTime, end: DateTime.now());
           setState(() {
             _progress = "0";
           });
@@ -146,6 +126,26 @@ class _MyHomePageState extends State<MyHomePage> {
     // TODO: implement dispose
     super.dispose();
   }
+}
+
+class VideoPlayerScreen extends StatefulWidget {
+  final MediaInfo info;
+  final int originalSize;
+  final int originalWidth;
+  final int originalHeigth;
+  final DateTimeRange duration;
+
+  VideoPlayerScreen(
+      {Key key,
+      this.info,
+      this.originalSize,
+      this.originalWidth,
+      this.originalHeigth,
+      this.duration})
+      : super(key: key);
+
+  @override
+  _VideoPlayerScreenState createState() => _VideoPlayerScreenState();
 }
 
 class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
