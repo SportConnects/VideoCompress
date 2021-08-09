@@ -101,41 +101,7 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                 var videoTrackStrategy: TrackStrategy
                 val audioTrackStrategy: TrackStrategy
 
-                if (width != null && height != null) {
-                    videoTrackStrategy = DefaultVideoStrategy.exact(width, height).build()
-                } else {
-                    when (quality) {
-                        0 -> {
-                            videoTrackStrategy = DefaultVideoStrategy.atMost(720).build()
-                        }
-                        1 -> {
-                            videoTrackStrategy = DefaultVideoStrategy.atMost(360).build()
-                        }
-                        2 -> {
-                            videoTrackStrategy = DefaultVideoStrategy.atMost(640).build()
-                        }
-                        3 -> {
-                            assert(value = frameRate != null)
-                            videoTrackStrategy = DefaultVideoStrategy.Builder()
-                                .keyFrameInterval(3f)
-                                .bitRate(1280 * 720 * 4.toLong())
-                                .frameRate(frameRate!!) // will be capped to the input frameRate
-                                .build()
-                        }
-                        4 -> {
-                            videoTrackStrategy = DefaultVideoStrategy.atMost(480, 640).build()
-                        }
-                        5 -> {
-                            videoTrackStrategy = DefaultVideoStrategy.atMost(540, 960).build()
-                        }
-                        6 -> {
-                            videoTrackStrategy = DefaultVideoStrategy.atMost(720, 1280).build()
-                        }
-                        7 -> {
-                            videoTrackStrategy = DefaultVideoStrategy.atMost(1080, 1920).build()
-                        }
-                    }
-                }
+                videoTrackStrategy = DefaultVideoStrategy.exact(width, height).build()
 
                 audioTrackStrategy = if (includeAudio) {
                     val sampleRate = DefaultAudioStrategy.SAMPLE_RATE_AS_INPUT
