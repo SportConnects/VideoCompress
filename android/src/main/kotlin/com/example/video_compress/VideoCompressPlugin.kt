@@ -102,6 +102,10 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                 val audioTrackStrategy: TrackStrategy
 
                 if (width != null && height != null) {
+                    // Need original video metadata
+                    val mediaInfo = Utility(channelName).getMediaInfoJson(context, path!!).toString()
+                    Log.w(TAG, mediaInfo)
+
                     if(width >= 640 && height >= 640) {
                         videoTrackStrategy = DefaultVideoStrategy.exact(640, 640).build()
                     } else if(height >= 480 && height <= 640) {
