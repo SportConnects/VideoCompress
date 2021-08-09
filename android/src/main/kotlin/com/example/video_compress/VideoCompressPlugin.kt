@@ -98,8 +98,24 @@ class VideoCompressPlugin : MethodCallHandler, FlutterPlugin {
                 val out = SimpleDateFormat("yyyy-MM-dd hh-mm-ss").format(Date())
                 val destPath: String = tempDir + File.separator + "VID_" + out + ".mp4"
 
-                var videoTrackStrategy: TrackStrategy = DefaultVideoStrategy.exact(width, height).build();
+                var videoTrackStrategy: TrackStrategy = DefaultVideoStrategy.exact(640, 640).build();
                 val audioTrackStrategy: TrackStrategy
+
+                if (width != null && height != null) {
+                    if(width >= 640 && height >= 640) {
+                        videoTrackStrategy = DefaultVideoStrategy.exact(640, 640).build()
+                    } else if(height >= 480 && height <= 640) {
+                        videoTrackStrategy = DefaultVideoStrategy.exact(480, 480).build()
+                    } else if(height >= 320 && height <= 480) {
+                        videoTrackStrategy = DefaultVideoStrategy.exact(320, 320).build()
+                    } else if(height >= 160 && height <= 320) {
+                        videoTrackStrategy = DefaultVideoStrategy.exact(160, 160).build()
+                    } else if(height >= 0 && height <= 160) {
+                        videoTrackStrategy = DefaultVideoStrategy.exact(160, 160).build()
+                    } else if(height >= 0 && height <= 160) {
+                        videoTrackStrategy = DefaultVideoStrategy.exact(width, height).build()
+                    }
+                }
 
                 audioTrackStrategy = if (includeAudio) {
                     val sampleRate = DefaultAudioStrategy.SAMPLE_RATE_AS_INPUT
